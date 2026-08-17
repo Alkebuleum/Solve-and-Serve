@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solve &amp; Serve — Public-Interest Technology for Human Protection and Community Opportunity</title>
+<meta name="description" content="Solve & Serve is a public-interest nonprofit helping underserved communities safely understand, access, and shape artificial intelligence and emerging technology.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Public+Sans:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#191D33;
+    --ink-deep:#12152A;
+    --paper:#F5F2EA;
+    --paper-soft:#EFEBDF;
+    --gold:#E9A820;
+    --gold-deep:#D3930F;
+    --red:#C34428;
+    --muted:#63677A;
+    --line:rgba(25,29,51,.14);
+    --line-light:rgba(245,242,234,.16);
+    --display:"Bricolage Grotesque", Georgia, serif;
+    --body:"Public Sans", -apple-system, "Segoe UI", sans-serif;
+    --mono:"Spline Sans Mono", "SF Mono", monospace;
+    --max:1240px;
+    --pad:clamp(1.25rem, 4vw, 3rem);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--body);
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    font-size:1.0625rem;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--gold);color:var(--ink)}
+  a{color:inherit}
+  img,svg{display:block}
+  .wrap{max-width:var(--max);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:2px}
+
+  /* ---------- Header ---------- */
+  header{
+    position:fixed;inset:0 0 auto 0;z-index:60;
+    background:rgba(245,242,234,0);
+    transition:background .35s ease, box-shadow .35s ease;
+  }
+  header.solid{background:rgba(245,242,234,.92);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:1.1rem;padding-bottom:1.1rem;
+  }
+  .brand{
+    font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;
+    text-decoration:none;display:flex;align-items:baseline;gap:.05em;
+  }
+  .brand .amp{color:var(--gold);font-weight:800;font-size:1.25em;line-height:0;transform:translateY(.06em)}
+  .nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+  .nav-links a{
+    text-decoration:none;font-size:.92rem;font-weight:500;letter-spacing:.01em;
+    position:relative;
+  }
+  .nav-links a:not(.btn){padding:.25rem 0}
+  .nav-links a:not(.btn)::after{
+    content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--gold);transition:width .25s ease;
+  }
+  .nav-links a:not(.btn):hover::after{width:100%}
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:var(--gold);color:var(--ink);text-decoration:none;
+    font-weight:600;font-size:.95rem;letter-spacing:.01em;
+    padding:.8rem 1.5rem;border-radius:999px;border:2px solid var(--gold);
+    transition:transform .2s ease, background .2s ease, color .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px);background:var(--gold-deep);border-color:var(--gold-deep)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+  .btn .arr{transition:transform .2s ease}
+  .btn:hover .arr{transform:translateX(3px)}
+
+  .menu-btn{display:none;background:none;border:none;cursor:pointer;padding:.5rem;z-index:80}
+  .menu-btn span{display:block;width:26px;height:2.5px;background:var(--ink);margin:5px 0;transition:.3s;border-radius:2px}
+  .menu-btn.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+  .menu-btn.open span:nth-child(2){opacity:0}
+  .menu-btn.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+  .mobile-menu{
+    position:fixed;inset:0;background:var(--ink);z-index:70;display:none;
+    flex-direction:column;justify-content:center;padding:var(--pad);
+  }
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{
+    color:var(--paper);text-decoration:none;font-family:var(--display);
+    font-size:clamp(2rem,8vw,3rem);font-weight:600;padding:.4rem 0;letter-spacing:-.02em;
+  }
+  .mobile-menu a:hover{color:var(--gold)}
+  .mobile-menu .m-cta{margin-top:1.5rem;font-family:var(--body);font-size:1rem}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    padding-top:7rem;padding-bottom:0;overflow:hidden;
+  }
+  .amp-watermark{
+    position:absolute;top:50%;right:-4%;transform:translateY(-54%);
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(24rem, 62vw, 58rem);line-height:1;
+    color:transparent;-webkit-text-stroke:1.5px rgba(233,168,32,.28);
+    user-select:none;pointer-events:none;z-index:0;
+    animation:ampFloat 14s ease-in-out infinite;
+  }
+  @keyframes ampFloat{
+    0%,100%{transform:translateY(-54%) rotate(0deg)}
+    50%{transform:translateY(-50%) rotate(-2.5deg)}
+  }
+  .hero-inner{position:relative;z-index:1}
+  .hero-eyebrow{
+    font-family:var(--mono);font-size:.8rem;font-weight:500;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:1.75rem;
+    display:flex;align-items:center;gap:.75rem;
+  }
+  .hero-eyebrow::before{content:"";width:2.5rem;height:2px;background:var(--gold)}
+  .hero-title{
+    font-family:var(--display);font-weight:700;letter-spacing:-.035em;
+    font-size:clamp(3.4rem, 12.5vw, 10.5rem);line-height:.92;
+  }
+  .hero-title .row{display:block;overflow:hidden}
+  .hero-title .word{display:inline-block;transform:translateY(110%);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero-title .row:nth-child(2) .word{animation-delay:.12s}
+  .hero-title .big-amp{
+    color:var(--gold);font-weight:800;font-size:1.12em;
+    display:inline-block;margin-right:.04em;transform:translateY(110%);
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .2s forwards;
+  }
+  @keyframes rise{to{transform:translateY(0)}}
+  .hero-sub{
+    margin-top:2.5rem;max-width:44rem;
+    display:grid;gap:1.25rem;
+    opacity:0;transform:translateY(16px);animation:fadeUp .8s ease .55s forwards;
+  }
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+  .hero-statement{
+    font-family:var(--display);font-weight:500;letter-spacing:-.015em;
+    font-size:clamp(1.35rem, 2.6vw, 1.85rem);line-height:1.3;
+  }
+  .hero-statement em{font-style:normal;color:var(--gold-deep);font-weight:700}
+  .hero-copy{color:var(--muted);max-width:38rem}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.5rem}
+
+  /* ---------- Ticker ---------- */
+  .ticker{
+    background:var(--ink);color:var(--gold);overflow:hidden;
+    padding:1rem 0;margin-top:4.5rem;
+    border-top:1px solid var(--ink);
+  }
+  .ticker-track{display:flex;width:max-content;animation:scroll 36s linear infinite}
+  .ticker span{
+    font-family:var(--mono);font-size:.85rem;font-weight:500;letter-spacing:.18em;
+    text-transform:uppercase;white-space:nowrap;padding:0 1.4rem;
+    display:flex;align-items:center;gap:2.8rem;
+  }
+  .ticker .dot{color:var(--paper);opacity:.5}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ---------- Shared section bits ---------- */
+  section{padding:clamp(5rem, 10vw, 8.5rem) 0}
+  .eyebrow{
+    font-family:var(--mono);font-size:.8rem;font-weight:500;letter-spacing:.22em;
+    text-transform:uppercase;display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem;
+  }
+  .eyebrow .amp{color:var(--gold);font-family:var(--display);font-weight:800;font-size:1.35em;line-height:0;text-transform:none}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+
+  /* ---------- Why we exist ---------- */
+  .why{background:var(--ink);color:var(--paper)}
+  .why .eyebrow{color:rgba(245,242,234,.6)}
+  .why-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+  .why h2{
+    font-family:var(--display);font-weight:600;letter-spacing:-.025em;
+    font-size:clamp(2.2rem, 5vw, 3.9rem);line-height:1.05;
+  }
+  .why h2 .hl{color:var(--gold)}
+  .why-copy{display:grid;gap:1.25rem;color:rgba(245,242,234,.78);font-size:1.05rem}
+  .why-copy strong{color:var(--paper);font-weight:600}
+  .gap-list{margin-top:2.5rem;display:grid;gap:0;border-top:1px solid var(--line-light)}
+  .gap-item{
+    display:flex;gap:1.25rem;align-items:baseline;
+    padding:1.35rem 0;border-bottom:1px solid var(--line-light);
+  }
+  .gap-item .g-amp{font-family:var(--display);font-weight:800;color:var(--gold);font-size:1.3rem;line-height:1}
+  .gap-item p{color:rgba(245,242,234,.85);font-size:1rem}
+  .gap-item p b{color:var(--paper)}
+
+  /* ---------- Pillars ---------- */
+  .pillars-head{max-width:52rem;margin-bottom:clamp(2.5rem,5vw,4rem)}
+  .pillars-head h2{
+    font-family:var(--display);font-weight:600;letter-spacing:-.025em;
+    font-size:clamp(2.2rem,5vw,3.9rem);line-height:1.05;margin-bottom:1.25rem;
+  }
+  .pillars-head p{color:var(--muted);max-width:40rem}
+  .pillar{
+    border-top:1px solid var(--line);
+    padding:clamp(2rem,4vw,3rem) 0;
+    display:grid;grid-template-columns:72px 1fr 1.1fr;gap:clamp(1.5rem,4vw,3.5rem);
+    align-items:start;transition:background .3s ease;
+  }
+  .pillar:last-of-type{border-bottom:1px solid var(--line)}
+  .pillar:hover{background:rgba(233,168,32,.07)}
+  .pillar-icon{width:56px;height:56px;color:var(--ink);transition:color .3s ease, transform .3s ease}
+  .pillar:hover .pillar-icon{color:var(--gold-deep);transform:translateY(-4px)}
+  .pillar-main .p-eyebrow{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:.6rem;
+  }
+  .pillar-main h3{
+    font-family:var(--display);font-weight:650;letter-spacing:-.02em;
+    font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.1;margin-bottom:1rem;
+  }
+  .pillar-main p{color:var(--muted);max-width:30rem}
+  .pillar-work{display:flex;flex-wrap:wrap;gap:.6rem;align-content:start;padding-top:2.4rem}
+  .chip{
+    font-size:.86rem;font-weight:500;padding:.5rem 1rem;border-radius:999px;
+    border:1.5px solid var(--line);background:transparent;
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .pillar:hover .chip{border-color:rgba(211,147,15,.5)}
+
+  /* ---------- Mission band ---------- */
+  .mission{background:var(--gold);color:var(--ink);padding:clamp(4.5rem,9vw,7rem) 0}
+  .mission .eyebrow{color:rgba(25,29,51,.65)}
+  .mission .eyebrow .amp{color:var(--ink)}
+  .mission blockquote{
+    font-family:var(--display);font-weight:600;letter-spacing:-.02em;
+    font-size:clamp(1.6rem, 3.6vw, 2.7rem);line-height:1.22;max-width:62rem;
+  }
+  .mission cite{
+    display:block;margin-top:2rem;font-style:normal;font-family:var(--mono);
+    font-size:.82rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(25,29,51,.6);
+  }
+
+  /* ---------- Closing ---------- */
+  .closing{background:var(--ink);color:var(--paper);position:relative;overflow:hidden}
+  .closing .amp-bg{
+    position:absolute;bottom:-18%;left:-6%;
+    font-family:var(--display);font-weight:800;font-size:clamp(18rem,42vw,38rem);line-height:1;
+    color:transparent;-webkit-text-stroke:1.2px rgba(233,168,32,.16);
+    user-select:none;pointer-events:none;
+  }
+  .closing-inner{position:relative;z-index:1;max-width:56rem}
+  .closing h2{
+    font-family:var(--display);font-weight:600;letter-spacing:-.025em;
+    font-size:clamp(2.3rem,5.5vw,4.2rem);line-height:1.05;margin-bottom:1.75rem;
+  }
+  .closing h2 .hl{color:var(--gold)}
+  .closing p{color:rgba(245,242,234,.75);max-width:42rem;margin-bottom:2.5rem}
+  .closing .btn.ghost{color:var(--paper);border-color:rgba(245,242,234,.5)}
+  .closing .btn.ghost:hover{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--ink-deep);color:rgba(245,242,234,.72);padding:4.5rem 0 2.5rem;font-size:.95rem}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:3rem;margin-bottom:3.5rem}
+  .foot-brand .brand{color:var(--paper);font-size:1.5rem;margin-bottom:1rem}
+  .foot-brand p{max-width:22rem;font-size:.92rem;line-height:1.65}
+  .foot-col h4{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+    color:rgba(245,242,234,.45);margin-bottom:1.2rem;font-weight:500;
+  }
+  .foot-col ul{list-style:none;display:grid;gap:.7rem}
+  .foot-col a{text-decoration:none;transition:color .2s}
+  .foot-col a:hover{color:var(--gold)}
+  .foot-note{font-size:.88rem;line-height:1.7;color:rgba(245,242,234,.55)}
+  .foot-note b{color:rgba(245,242,234,.85);font-weight:600}
+  .foot-bottom{
+    border-top:1px solid rgba(245,242,234,.12);padding-top:2rem;
+    display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;
+    font-size:.82rem;color:rgba(245,242,234,.45);
+  }
+  .foot-bottom .tag{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase}
+  .foot-bottom .tag .amp{color:var(--gold)}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:960px){
+    .nav-links{display:none}
+    .menu-btn{display:block}
+    .why-grid{grid-template-columns:1fr}
+    .pillar{grid-template-columns:1fr;gap:1.25rem}
+    .pillar-icon{width:46px;height:46px}
+    .pillar-work{padding-top:0}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    .foot-grid{grid-template-columns:1fr}
+    .amp-watermark{right:-30%;opacity:.7}
+    .hero-ctas .btn{width:100%;justify-content:center}
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .hero-title .word,.hero-title .big-amp{transform:none}
+    .hero-sub{opacity:1;transform:none}
+    .reveal{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Solve and Serve home">Solve<span class="amp">&amp;</span>Serve</a>
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        <li><a href="#work">Our Work</a></li>
+        <li><a href="#mission">Mission</a></li>
+        <li><a href="#why">Why We Exist</a></li>
+        <li><a href="#partner" class="btn">Partner With Us <span class="arr">→</span></a></li>
+      </ul>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#work">Our Work</a>
+  <a href="#mission">Mission</a>
+  <a href="#why">Why We Exist</a>
+  <a href="#partner">Partner With Us</a>
+  <a href="#partner" class="btn m-cta">Get in touch <span class="arr">→</span></a>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="padding-bottom:0">
+    <div class="amp-watermark" aria-hidden="true">&amp;</div>
+    <div class="wrap hero-inner">
+      <p class="hero-eyebrow">Technology that solves. Systems that serve.</p>
+      <h1 class="hero-title" aria-label="Solve and Serve">
+        <span class="row"><span class="word">Solve</span></span>
+        <span class="row"><span class="big-amp" aria-hidden="true">&amp;</span><span class="word">Serve</span></span>
+      </h1>
+      <div class="hero-sub">
+        <p class="hero-statement">Technology should solve real problems — <em>and serve people.</em></p>
+        <p class="hero-copy">Solve &amp; Serve is a public-interest nonprofit helping underserved communities safely understand, access, and shape artificial intelligence and emerging technology.</p>
+        <div class="hero-ctas">
+          <a class="btn" href="#work">Explore Our Work <span class="arr">→</span></a>
+          <a class="btn ghost" href="#partner">Partner With Us</a>
+        </div>
+      </div>
+    </div>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>AI literacy <i class="dot">·</i> Digital safety <i class="dot">·</i> Privacy &amp; rights <i class="dot">·</i> Workforce readiness <i class="dot">·</i> Civic technology <i class="dot">·</i> Community research <i class="dot">·</i></span>
+        <span>AI literacy <i class="dot">·</i> Digital safety <i class="dot">·</i> Privacy &amp; rights <i class="dot">·</i> Workforce readiness <i class="dot">·</i> Civic technology <i class="dot">·</i> Community research <i class="dot">·</i></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY WE EXIST -->
+  <section class="why" id="why">
+    <div class="wrap">
+      <p class="eyebrow reveal"><span class="amp">&amp;</span> Why we exist</p>
+      <div class="why-grid">
+        <div class="reveal">
+          <h2>Progress is accelerating. <span class="hl">Protection and opportunity are not.</span></h2>
+        </div>
+        <div class="why-copy reveal">
+          <p>Artificial intelligence and emerging technology are reshaping how people work, learn, access services, and make decisions. But access, protection, and opportunity are not advancing equally.</p>
+          <p><strong>Communities already facing economic and social barriers are often the least represented</strong> in how new technologies are designed, governed, and deployed.</p>
+          <p>Solve &amp; Serve works to close that gap — through education, research, community partnerships, and responsible innovation.</p>
+        </div>
+      </div>
+      <div class="gap-list reveal">
+        <div class="gap-item"><span class="g-amp">&amp;</span><p><b>Protected</b> — from digital risk, exclusion, and unsafe technology</p></div>
+        <div class="gap-item"><span class="g-amp">&amp;</span><p><b>Included</b> — in how emerging technology is designed and governed</p></div>
+        <div class="gap-item"><span class="g-amp">&amp;</span><p><b>Empowered</b> — with the knowledge and tools to shape what comes next</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR WORK / PILLARS -->
+  <section id="work">
+    <div class="wrap">
+      <div class="pillars-head">
+        <p class="eyebrow reveal"><span class="amp">&amp;</span> What we do</p>
+        <h2 class="reveal">Three ways we put technology to work for people.</h2>
+        <p class="reveal">Every program we build starts with a real problem affecting a real community — and ends with a solution designed to last.</p>
+      </div>
+
+      <article class="pillar reveal">
+        <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M28 6 L46 13 V27 C46 38 38.5 46.5 28 50 C17.5 46.5 10 38 10 27 V13 Z"/>
+          <circle cx="28" cy="25" r="4.5"/>
+          <path d="M20 38 C21.5 33.5 24.5 31.5 28 31.5 C31.5 31.5 34.5 33.5 36 38"/>
+        </svg>
+        <div class="pillar-main">
+          <p class="p-eyebrow">Human-Centered AI &amp; Digital Protection</p>
+          <h3>Protect people</h3>
+          <p>We help communities understand and respond to the risks created by AI, automation, surveillance, misinformation, and digital exclusion — advancing human-centered approaches to safety, privacy, and rights.</p>
+        </div>
+        <div class="pillar-work">
+          <span class="chip">AI safety &amp; public education</span>
+          <span class="chip">Digital rights &amp; privacy</span>
+          <span class="chip">Responsible AI adoption</span>
+          <span class="chip">Protecting vulnerable populations</span>
+          <span class="chip">Research &amp; policy recommendations</span>
+        </div>
+      </article>
+
+      <article class="pillar reveal">
+        <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 50 V26 C10 15.5 18 8 28 8 C38 8 46 15.5 46 26 V50"/>
+          <path d="M20 50 V30 C20 24.5 23.5 21 28 21 C32.5 21 36 24.5 36 30 V50"/>
+          <path d="M6 50 H50"/>
+        </svg>
+        <div class="pillar-main">
+          <p class="p-eyebrow">Community Technology Access</p>
+          <h3>Expand opportunity</h3>
+          <p>We help underserved communities gain practical access to the tools, knowledge, and infrastructure needed to participate — and compete — in the changing digital economy.</p>
+        </div>
+        <div class="pillar-work">
+          <span class="chip">AI &amp; digital-literacy training</span>
+          <span class="chip">Community technology workshops</span>
+          <span class="chip">Workforce-readiness programs</span>
+          <span class="chip">Local computing resources</span>
+          <span class="chip">Support for schools &amp; nonprofits</span>
+        </div>
+      </article>
+
+      <article class="pillar reveal">
+        <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="8" y="34" width="14" height="14"/>
+          <rect x="26" y="20" width="14" height="14" transform="rotate(0 33 27)"/>
+          <rect x="21" y="6" width="14" height="14" transform="rotate(8 28 13)"/>
+          <path d="M8 34 L15 24 M40 34 L46 44"/>
+        </svg>
+        <div class="pillar-main">
+          <p class="p-eyebrow">Public-Interest Innovation</p>
+          <h3>Build practical solutions</h3>
+          <p>We design and test responsible technology that improves accountability, opportunity, public services, and community development — piloted with the people it's meant to serve.</p>
+        </div>
+        <div class="pillar-work">
+          <span class="chip">Civic &amp; nonprofit technology</span>
+          <span class="chip">Transparent record systems</span>
+          <span class="chip">Trusted digital credentials</span>
+          <span class="chip">Community-led pilots</span>
+          <span class="chip">Responsible-tech sandboxes</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section class="mission" id="mission">
+    <div class="wrap">
+      <p class="eyebrow reveal"><span class="amp">&amp;</span> Our mission</p>
+      <blockquote class="reveal">
+        To use responsible technology, education, research, and community partnerships to solve practical challenges, protect people from emerging digital risks, and expand access to opportunity.
+        <cite>Solve &amp; Serve Inc. — a Maryland public-interest nonprofit</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- CLOSING / PARTNER -->
+  <section class="closing" id="partner">
+    <div class="amp-bg" aria-hidden="true">&amp;</div>
+    <div class="wrap closing-inner">
+      <p class="eyebrow reveal" style="color:rgba(245,242,234,.6)"><span class="amp">&amp;</span> Join the work</p>
+      <h2 class="reveal">The future should not simply happen to communities. <span class="hl">Communities should help shape it.</span></h2>
+      <p class="reveal">We work with funders, researchers, institutions, technology builders, and community leaders to develop solutions that are responsible, practical, and built around human needs.</p>
+      <div class="hero-ctas reveal">
+        <a class="btn" href="mailto:partnerships@solveandserve.org">Partner With Solve &amp; Serve <span class="arr">→</span></a>
+        <a class="btn ghost" href="#work">Explore Our Work</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top">Solve<span class="amp">&amp;</span>Serve</a>
+        <p>A public-interest nonprofit helping underserved communities benefit from AI and emerging technology — safely, responsibly, and practically.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#work">Our Work</a></li>
+          <li><a href="#work">Programs</a></li>
+          <li><a href="#work">Research &amp; Resources</a></li>
+          <li><a href="#partner">Partnerships</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Organization</h4>
+        <ul>
+          <li><a href="#mission">About</a></li>
+          <li><a href="#mission">Transparency</a></li>
+          <li><a href="#partner">Contact</a></li>
+          <li><a href="#partner">Volunteer</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Good to know</h4>
+        <p class="foot-note"><b>Solve &amp; Serve Inc.</b> is a Maryland nonprofit corporation, formerly Self Empowerment Inc. Founding programs are currently being developed with community, institutional, and research partners.</p>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Solve &amp; Serve Inc. All rights reserved.</span>
+      <span class="tag">Technology that solves <span class="amp">&amp;</span> systems that serve</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky header
+  const header = document.getElementById('header');
+  const onScroll = () => header.classList.toggle('solid', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Mobile menu
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const toggleMenu = (open) => {
+    menuBtn.classList.toggle('open', open);
+    mobileMenu.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  menuBtn.addEventListener('click', () => toggleMenu(!mobileMenu.classList.contains('open')));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+
+  // Scroll reveals
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.15, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
